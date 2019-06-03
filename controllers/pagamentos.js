@@ -38,4 +38,40 @@ module.exports = function(app){
       }
     })
   })
+
+  app.put('/pagamentos/pagamento/:id', function(req, res) {
+    const id = req.params.id
+    let pagamento = { id, status: 'CONFIRMADO'}
+
+    const connection = app.persistencia.connectionFactory()
+    const pagamentoDao = new app.persistencia.PagamentoDao(connection)
+
+    pagamentoDao.atualiza(pagamento, function(err, resp) {
+      if (err) {
+        console.log('Erro ao atualizar no banco')
+        res.status(500).send(err)
+      } else {
+        // console.log('pagamento criado: ' , result)
+        res.status(202).json(pagamento)
+      }
+    })
+  })
+
+  app.delete('/pagamentos/pagamento/:id', function(req, res) {
+    const id = req.params.id
+    let pagamento = { id, status: 'CANCELADO'}
+
+    const connection = app.persistencia.connectionFactory()
+    const pagamentoDao = new app.persistencia.PagamentoDao(connection)
+
+    pagamentoDao.atualiza(pagamento, function(err, resp) {
+      if (err) {
+        console.log('Erro ao remover do banco')
+        res.status(500).send(err)
+      } else {
+        // console.log('pagamento criado: ' , result)
+        res.status(204).json(pagamento)
+      }
+    })
+  })
 }
